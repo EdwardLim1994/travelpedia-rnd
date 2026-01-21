@@ -1,0 +1,23 @@
+services:
+  # router:
+  #   image: ghcr.io/apollographql/router:v2.10.0
+  #   container_name: apollo-router
+  #   ports:
+  #     - 4000:4000
+  #   volumes:
+  #     - ./configs/router/router.yaml:/dist/config/router.yaml
+  #     - ./configs/router/supergraph.graphql:/dist/config/supergraph.graphql
+  #   environment:
+  #     APOLLO_ROUTER_CONFIG_PATH: /dist/config/router.yaml
+  #     APOLLO_ROUTER_SUPERGRAPH_PATH: /dist/config/supergraph.graphql
+  #     APOLLO_ROUTER_HOT_RELOAD: "true"
+  #     APOLLO_ROUTER_CHECK: "true"
+  #   restart: always
+
+  hive:
+    image: ghcr.io/graphql-hive/gateway
+    container_name: graphql-hive-gateway
+    ports:
+      - 4000:4000
+    volumes:
+      - ./configs/router/supergraph.graphql:/app/supergraph.graphql

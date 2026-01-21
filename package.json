@@ -1,0 +1,19 @@
+{
+  "name": "travelpedia_rnd",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "turbo": "^2.7.3"
+  },
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "local": "turbo run local",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "build": "turbo run build"
+  }
+}
