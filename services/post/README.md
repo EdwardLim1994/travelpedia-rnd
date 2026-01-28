@@ -1,15 +1,15 @@
 # post
 
-To install dependencies:
+# Setup
 
-```bash
-bun install
-```
+Follow these steps to run [Elysia.js](https://elysiajs.com) under [Bun](https://bun.sh):
 
-To run:
+1. Download packages
+   ```bash
+   bun install
+   ```
+2. You're ready to go!
+   ```bash
+   bun run main.ts
+   ```
 
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.3.5. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.

@@ -1,21 +1,16 @@
 {
   "name": "post",
-  "module": "index.ts",
   "type": "module",
-  "private": true,
   "scripts": {
-      "dev": "bun run --watch --hot ./src/index.ts",
-      "build": "bun build --compile --outdir ./dist --target node16 ./src/index.ts",
-      "start": "./dist/index"
+    "dev": "bun run --watch main.ts",
+    "typecheck": "tsc"
   },
   "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
+    "@types/bun": "1",
+    "typescript": "5"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.14.3",
-    "travelpedia_schema": "workspace:*"
+    "@elysiajs/graphql-yoga": "^1.4.0",
+    "elysia": "1"
   }
 }
