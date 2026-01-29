@@ -1,16 +1,23 @@
 {
   "name": "post",
+  "module": "index.ts",
   "type": "module",
+  "private": true,
   "scripts": {
-    "dev": "bun run --watch main.ts",
-    "typecheck": "tsc"
+    "gen:proto": "$(pwd)/../../node_modules/.bin/protoc --plugin=protoc-gen-ts_proto=$(pwd)/../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./proto/generated --ts_proto_opt=esModuleInterop=true,outputServices=grpc-js,useOptionals=messages --proto_path=./proto ./proto/*.proto",
+    "dev": "bun run --watch index.ts"
   },
   "devDependencies": {
-    "@types/bun": "1",
-    "typescript": "5"
+    "@types/bun": "latest",
+    "protoc": "^33.4.0",
+    "ts-proto": "^2.11.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
   },
   "dependencies": {
     "@elysiajs/graphql-yoga": "^1.4.0",
-    "elysia": "1"
+    "@grpc/grpc-js": "^1.14.3",
+    "elysia": "^1.4.22"
   }
 }

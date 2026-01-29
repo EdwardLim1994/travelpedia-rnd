@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package blog;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+// The Post model
+message Post {
+  string id = 1;
+  string title = 2;
+  string content = 3;
+  string author = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
+// Request/Response messages for CRUD
+message CreatePostRequest {
+  string title = 1;
+  string content = 2;
+  string author = 3;
+}
+
+message GetPostRequest {
+  string id = 1;
+}
+
+message UpdatePostRequest {
+  string id = 1;
+  optional string title = 2;
+  optional string content = 3;
+}
+
+message DeletePostRequest {
+  string id = 1;
+}
+
+message ListPostsResponse {
+  repeated Post posts = 1;
+}
+
+// The CRUD Service
+service PostService {
+  rpc CreatePost (CreatePostRequest) returns (Post);
+  rpc GetPost (GetPostRequest) returns (Post);
+  rpc UpdatePost (UpdatePostRequest) returns (Post);
+  rpc DeletePost (DeletePostRequest) returns (google.protobuf.Empty);
+  rpc ListPosts (google.protobuf.Empty) returns (ListPostsResponse);
+}
+
