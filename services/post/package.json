@@ -4,10 +4,16 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "gen:proto": "$(pwd)/../../node_modules/.bin/protoc --plugin=protoc-gen-ts_proto=$(pwd)/../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./proto/generated --ts_proto_opt=esModuleInterop=true,outputServices=grpc-js,useOptionals=messages --proto_path=./proto ./proto/*.proto",
+    "gen:graphql": "graphql-codegen",
+    "gen:proto": "$(pwd)/../../node_modules/.bin/protoc --plugin=protoc-gen-ts_proto=$(pwd)/../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./generated/proto --ts_proto_opt=esModuleInterop=true,outputServices=grpc-js,useOptionals=messages --proto_path=./proto ./proto/*.proto",
+    "generate": "bun run gen:proto && bun run gen:graphql",
     "dev": "bun run --watch index.ts"
   },
   "devDependencies": {
+    "@apollo/rover": "^0.37.0",
+    "@graphql-codegen/cli": "^6.1.1",
+    "@graphql-codegen/typescript": "^5.0.7",
+    "@graphql-codegen/typescript-resolvers": "^5.1.5",
     "@types/bun": "latest",
     "protoc": "^33.4.0",
     "ts-proto": "^2.11.1"
@@ -16,8 +22,10 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "@elysiajs/graphql-yoga": "^1.4.0",
+    "@apollo/server": "^5.3.0",
+    "@apollo/subgraph": "^2.13.0",
     "@grpc/grpc-js": "^1.14.3",
-    "elysia": "^1.4.22"
+    "graphql": "^16.12.0",
+    "graphql-tag": "^2.12.6"
   }
 }

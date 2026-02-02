@@ -1,6 +1,3 @@
-import { Elysia } from "elysia";
-import { yoga } from "@elysiajs/graphql-yoga";
-
 import * as grpc from "@grpc/grpc-js";
 import {
   PostServiceService,
@@ -8,76 +5,104 @@ import {
   ListPostRequest,
   PostServiceClient,
   type PostServiceServer,
-} from "./proto/generated/post";
+} from "./generated/proto/post";
 
-const server = new grpc.Server();
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
+import { buildSubgraphSchema } from "@apollo/subgraph";
+import { gql } from "graphql-tag";
+import type { Resolvers, Post } from "./generated/graphql/post.ts";
 
-const postServer: PostServiceServer = {
-  createPost: (call, callback) => {},
-  deletePost: (call, callback) => {},
-  getPost: (call, callback) => {},
-  updatePost: (call, callback) => {},
-  listPosts: (call, callback) => {
-    callback(null, {
-      posts: [
-        {
-          id: "1",
-          title: "First Post",
-          content: "This is the content of the first post.",
-          author: "tester",
-          createdAt: new Date(),
-        },
-      ],
-    });
-  },
-};
+const graphqlSchema = await Bun.file("./graphql/post.graphql").text();
 
-server.addService(PostServiceService, postServer);
+async function startGrpcServer() {
+  const server = new grpc.Server();
 
-server.bindAsync(
-  "0.0.0.0:50080",
-  grpc.ServerCredentials.createInsecure(),
-  () => {
-    console.log("gRPC server running in port 50080");
-    const client = new PostServiceClient(
-      "localhost:50080",
-      grpc.credentials.createInsecure(),
-    );
-    new Elysia()
-      .use(
-        yoga({
-          typeDefs: /*Graphql*/ `
-            type Query{
-              hello: String!
-            }`,
-          resolvers: {
-            Query: {
-              hello: () => {
-                const call = new Promise((resolve, reject) => {
-                  const listPostRequest: ListPostRequest = {};
-                  client.listPosts(listPostRequest, (err, res) => {
-                    if (err) {
-                      reject(err);
-                    } else {
-                      resolve(res);
-                    }
-                  });
-                });
-
-                return call
-                  .then((res: ListPostsResponse) => {
-                    return res.posts[0]?.title;
-                  })
-                  .catch((err) => {
-                    console.error(err);
-                  });
-              },
-            },
+  const postServer: PostServiceServer = {
+    createPost: (call, callback) => {},
+    deletePost: (call, callback) => {},
+    getPost: (call, callback) => {},
+    updatePost: (call, callback) => {},
+    listPosts: (call, callback) => {
+      callback(null, {
+        posts: [
+          {
+            id: "1",
+            title: "First Post",
+            content: "This is the content of the first post.",
+            author: "tester",
+            createdAt: new Date(),
           },
-        }),
-      )
-      .listen(4080, () => {
-        console.log("GraphQL server running in port 4080");
+        ],
       });
-  },
-);
+    },
+  };
+
+  server.addService(PostServiceService, postServer);
+
+  server.bindAsync(
+    "0.0.0.0:50080",
+    grpc.ServerCredentials.createInsecure(),
+    async () => {
+      console.log("gRPC server running in port 50080");
+    },
+  );
+}
+async function startGraphQLServer() {
+  const client = new PostServiceClient(
+    "localhost:50080",
+    grpc.credentials.createInsecure(),
+  );
+
+  const typeDefs = gql`
+    ${graphqlSchema}
+  `;
+
+  const resolvers: Resolvers = {
+    Query: {
+      posts: async () => {
+        const calling = async () =>
+          new Promise<Post[] | null>((resolve, reject) => {
+            console.log("Calling gRPC getPost...");
+            client.listPosts({}, (error, response) => {
+              if (error) {
+                console.error("Error fetching posts:", error);
+                reject(error);
+                return;
+              } else {
+                console.log(response);
+                resolve(response.posts);
+              }
+            });
+          });
+
+        const posts = await calling();
+        return posts;
+      },
+    },
+  };
+
+  const graphqlServer = new ApolloServer({
+    schema: buildSubgraphSchema({
+      typeDefs,
+      resolvers,
+    }),
+  });
+
+  const { url } = await startStandaloneServer(graphqlServer, {
+    listen: {
+      port: 4080,
+    },
+  });
+
+  console.log(`GraphQL server running at ${url}`);
+}
+
+(async () => {
+  try {
+    await startGrpcServer();
+    await startGraphQLServer();
+  } catch (error) {
+    console.error("Error starting servers:", error);
+  }
+})();
