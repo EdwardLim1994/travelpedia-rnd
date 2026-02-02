@@ -7,6 +7,28 @@
         "turbo": "^2.7.3",
       },
     },
+    "services/comment": {
+      "name": "comment",
+      "dependencies": {
+        "@apollo/server": "^5.3.0",
+        "@apollo/subgraph": "^2.13.0",
+        "@grpc/grpc-js": "^1.14.3",
+        "graphql": "^16.12.0",
+        "graphql-tag": "^2.12.6",
+      },
+      "devDependencies": {
+        "@apollo/rover": "^0.37.0",
+        "@graphql-codegen/cli": "^6.1.1",
+        "@graphql-codegen/typescript": "^5.0.7",
+        "@graphql-codegen/typescript-resolvers": "^5.1.5",
+        "@types/bun": "latest",
+        "protoc": "^33.4.0",
+        "ts-proto": "^2.11.1",
+      },
+      "peerDependencies": {
+        "typescript": "^5",
+      },
+    },
     "services/post": {
       "name": "post",
       "dependencies": {
@@ -380,6 +402,8 @@
     "colorette": ["colorette@2.0.20", "", {}, "sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w=="],
 
     "combined-stream": ["combined-stream@1.0.8", "", { "dependencies": { "delayed-stream": "~1.0.0" } }, "sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg=="],
+
+    "comment": ["comment@workspace:services/comment"],
 
     "common-tags": ["common-tags@1.8.2", "", {}, "sha512-gk/Z852D2Wtb//0I+kRFNKKE9dIIVirjoqPoA1wJU+XePVXZfGeBpk45+A1rKO4Q43prqWBNY/MiIeRLbPWUaA=="],
 

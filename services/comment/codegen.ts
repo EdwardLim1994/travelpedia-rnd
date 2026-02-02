@@ -2,13 +2,13 @@ import type { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: "./graphql/post.graphql",
+  schema: "./graphql/comment.graphql",
   generates: {
-    "./generated/graphql/post.ts": {
+    "./generated/graphql/comment.ts": {
       plugins: ["typescript", "typescript-resolvers"],
       config: {
         useIndexSignature: true,
-        contextType: "../types#PostContextType",
+        contextType: "../types#CommentContextType",
       },
     },
   },

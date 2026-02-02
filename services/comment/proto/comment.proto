@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package comment;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// The service definition for managing comments
+service CommentService {
+  // Create: Adds a new comment
+  rpc CreateComment(CreateCommentRequest) returns (Comment);
+
+  // Read: Retrieves a comment by its ID
+  rpc GetComment(GetCommentRequest) returns (Comment);
+
+  // Update: Modifies the text of an existing comment
+  rpc UpdateComment(UpdateCommentRequest) returns (Comment);
+
+  // Delete: Removes a comment
+  rpc DeleteComment(DeleteCommentRequest) returns (google.protobuf.Empty);
+
+  // List: Retrieves all comments for a specific post
+  rpc ListComments(google.protobuf.Empty) returns (ListCommentsResponse);
+}
+
+// --- Request/Response Messages ---
+
+message CreateCommentRequest {
+  string post_id = 1;
+  string author_id = 2;
+  string content = 3;
+}
+
+message GetCommentRequest {
+  string id = 1;
+}
+
+message UpdateCommentRequest {
+  string id = 1;
+  string content = 2;
+}
+
+message DeleteCommentRequest {
+  string id = 1;
+}
+
+message ListCommentsRequest {
+  string post_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListCommentsResponse {
+  repeated Comment comments = 1;
+  string next_page_token = 2;
+}
+
+// The core Comment message (from our previous step)
+message Comment {
+  string id = 1;
+  string post_id = 2;
+  string author_id = 3;
+  string content = 4;
+  google.protobuf.Timestamp created_at = 5;
+  int32 like_count = 6;
+}
+

@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
-import { PostContextType } from '../types';
+import { CommentContextType } from '../types';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -16,16 +16,15 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
-export type Post = {
-  __typename?: 'Post';
+export type Comment = {
+  __typename?: 'Comment';
   content: Scalars['String']['output'];
   id: Scalars['ID']['output'];
-  title: Scalars['String']['output'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  posts?: Maybe<Array<Maybe<Post>>>;
+  comments?: Maybe<Array<Maybe<Comment>>>;
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -103,8 +102,8 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  Comment: ResolverTypeWrapper<Comment>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
-  Post: ResolverTypeWrapper<Post>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
 }>;
@@ -112,24 +111,23 @@ export type ResolversTypes = ResolversObject<{
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
+  Comment: Comment;
   ID: Scalars['ID']['output'];
-  Post: Post;
   Query: Record<PropertyKey, never>;
   String: Scalars['String']['output'];
 }>;
 
-export type PostResolvers<ContextType = PostContextType, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = ResolversObject<{
+export type CommentResolvers<ContextType = CommentContextType, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = ResolversObject<{
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 }>;
 
-export type QueryResolvers<ContextType = PostContextType, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  posts?: Resolver<Maybe<Array<Maybe<ResolversTypes['Post']>>>, ParentType, ContextType>;
+export type QueryResolvers<ContextType = CommentContextType, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType>;
 }>;
 
-export type Resolvers<ContextType = PostContextType> = ResolversObject<{
-  Post?: PostResolvers<ContextType>;
+export type Resolvers<ContextType = CommentContextType> = ResolversObject<{
+  Comment?: CommentResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
 }>;
 
