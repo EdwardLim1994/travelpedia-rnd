@@ -1,0 +1,22 @@
+name: Supergraph Compoisition
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+jobs:
+    compose:
+        runs-on: ubuntu-latest
+
+    steps:
+        - name: Checkout Code
+          uses: actions/checkout@v4
+
+        - name: Install Rover CLI
+          run: |
+              curl -sSL https://rover.apollo.dev/nix/latest | sh
+              echo "$HOME/.rover/bin" >> $GITHUB_PATH
+        - name: Run Supergraph Composition
+          

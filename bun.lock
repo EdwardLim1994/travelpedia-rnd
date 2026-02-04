@@ -4,6 +4,7 @@
     "": {
       "name": "r&d",
       "dependencies": {
+        "@apollo/rover": "^0.37.0",
         "turbo": "^2.7.3",
       },
     },

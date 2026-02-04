@@ -1,11 +1,15 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
+  "ui": "tui",
   "tasks": {
     "local": {
       "cache": false
     },
     "build": {},
-    "dev": {},
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
     "test": {}
   }
 }

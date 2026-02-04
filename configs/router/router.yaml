@@ -1,0 +1,5 @@
+configuration:
+  sandbox:
+    enabled: true
+supergraph:
+  listen: 0.0.0.0:4000

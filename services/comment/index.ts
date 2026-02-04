@@ -83,6 +83,7 @@ async function startGraphqlServer() {
       typeDefs,
       resolvers,
     }),
+    introspection: true,
   });
 
   const { url } = await startStandaloneServer(graphqlServer, {

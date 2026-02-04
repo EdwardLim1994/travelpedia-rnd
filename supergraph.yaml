@@ -1,0 +1,9 @@
+subgraphs:
+  posts:
+    routing_url: http://localhost:4080
+    schema:
+      file: ./services/post/graphql/post.graphql
+  comments:
+    routing_url: http://localhost:4081
+    schema:
+        file: ./services/comment/graphql/comment.graphql
