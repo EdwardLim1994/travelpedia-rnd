@@ -13,3 +13,5 @@ services:
       APOLLO_ROUTER_HOT_RELOAD: "true"
       APOLLO_ROUTER_CHECK: "true"
     restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

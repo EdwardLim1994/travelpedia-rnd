@@ -1,5 +1,13 @@
-configuration:
-  sandbox:
-    enabled: true
 supergraph:
   listen: 0.0.0.0:4000
+  path: /graphql
+  introspection: true
+sandbox:
+  enabled: true
+
+homepage:
+  enabled: false 
+  # router.yaml
+include_subgraph_errors:
+  all: true # This will reveal the actual message from the subgraph
+
