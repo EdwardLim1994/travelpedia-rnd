@@ -4,6 +4,9 @@ extend schema
 type Comment @key(fields: "id") {
   id: ID!
   content: String!
+  authorId: String!
+  postId: String!
+  likeCount: Int!
 }
 
 type Query {

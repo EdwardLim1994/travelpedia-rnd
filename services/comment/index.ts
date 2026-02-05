@@ -24,19 +24,25 @@ async function startGrpcServer() {
     getComment: (call, callback) => {},
     updateComment: (call, callback) => {},
     listComments: (call, callback) => {
-      return [
-        {
-          id: "123",
-          content: "This is a sample comment",
-        },
-      ];
+      callback(null, {
+        comments: [
+          {
+            id: "123",
+            content: "This is a sample comment",
+            authorId: "456",
+            postId: "789",
+            likeCount: 10,
+          },
+        ],
+        nextPageToken: "",
+      });
     },
   };
 
   server.addService(CommentServiceService, commentServer);
 
   server.bindAsync(
-    "0.0.0.:50081",
+    "0.0.0.0:50081",
     grpc.ServerCredentials.createInsecure(),
     async () => {
       console.log("Comment GRPC server running in post 50081");
