@@ -7,6 +7,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -18,13 +19,28 @@ export type Scalars = {
 
 export type Comment = {
   __typename?: 'Comment';
+  authorId: Scalars['String']['output'];
   content: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  likeCount: Scalars['Int']['output'];
+  postId: Scalars['ID']['output'];
+};
+
+export type Post = {
+  __typename?: 'Post';
+  comments?: Maybe<Array<Maybe<Comment>>>;
   id: Scalars['ID']['output'];
 };
 
 export type Query = {
   __typename?: 'Query';
+  comment?: Maybe<Comment>;
   comments?: Maybe<Array<Maybe<Comment>>>;
+};
+
+
+export type QueryCommentArgs = {
+  id: Scalars['ID']['input'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -104,6 +120,8 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Comment: ResolverTypeWrapper<Comment>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  Post: ResolverTypeWrapper<Post>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
 }>;
@@ -113,21 +131,33 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
   Comment: Comment;
   ID: Scalars['ID']['output'];
+  Int: Scalars['Int']['output'];
+  Post: Post;
   Query: Record<PropertyKey, never>;
   String: Scalars['String']['output'];
 }>;
 
 export type CommentResolvers<ContextType = CommentContextType, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = ResolversObject<{
+  authorId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  likeCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  postId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+}>;
+
+export type PostResolvers<ContextType = CommentContextType, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = ResolversObject<{
+  comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 }>;
 
 export type QueryResolvers<ContextType = CommentContextType, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  comment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<QueryCommentArgs, 'id'>>;
   comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType>;
 }>;
 
 export type Resolvers<ContextType = CommentContextType> = ResolversObject<{
   Comment?: CommentResolvers<ContextType>;
+  Post?: PostResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
 }>;
 

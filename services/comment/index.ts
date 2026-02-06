@@ -21,7 +21,15 @@ async function startGrpcServer() {
   const commentServer: CommentServiceServer = {
     createComment: (call, callback) => {},
     deleteComment: (call, callback) => {},
-    getComment: (call, callback) => {},
+    getComment: (call, callback) => {
+      callback(null, {
+        id: "123",
+        content: "This is a sample comment",
+        authorId: "456",
+        postId: "1",
+        likeCount: 10,
+      });
+    },
     updateComment: (call, callback) => {},
     listComments: (call, callback) => {
       callback(null, {
@@ -30,7 +38,7 @@ async function startGrpcServer() {
             id: "123",
             content: "This is a sample comment",
             authorId: "456",
-            postId: "789",
+            postId: "1",
             likeCount: 10,
           },
         ],
@@ -61,7 +69,51 @@ async function startGraphqlServer() {
   `;
 
   const resolvers: Resolvers = {
+    Post: {
+      comments: async (parent) => {
+        console.log(parent);
+        const calling = async () =>
+          new Promise<Comment[] | null>((resolve, reject) => {
+            console.log("Calling gRPC listComments for Post...");
+
+            client.listComments({ postId: parent.id }, (error, response) => {
+              if (error) {
+                console.error("gRPC listComments error:", error);
+                reject(error);
+                return;
+              } else {
+                console.log(response);
+                resolve(response.comments);
+              }
+            });
+          });
+        const comments = await calling();
+        return (
+          comments?.filter((comment) => comment.postId === parent.id) || []
+        );
+      },
+    },
     Query: {
+      comment: async (_, args) => {
+        const calling = async () =>
+          new Promise<Comment | null>((resolve, reject) => {
+            console.log("Calling gRPC getComment...");
+
+            client.getComment({ id: "123" }, (error, response) => {
+              if (error) {
+                console.error("gRPC getComment error:", error);
+                reject(error);
+                return;
+              } else {
+                console.log(response);
+                resolve(response);
+              }
+            });
+          });
+
+        const comment = await calling();
+        return comment;
+      },
       comments: async () => {
         const calling = async () =>
           new Promise<Comment[] | null>((resolve, reject) => {

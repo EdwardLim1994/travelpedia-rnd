@@ -1,8 +1,6 @@
 import * as grpc from "@grpc/grpc-js";
 import {
   PostServiceService,
-  ListPostsResponse,
-  ListPostRequest,
   PostServiceClient,
   type PostServiceServer,
 } from "./generated/proto/post";
@@ -12,6 +10,8 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 import { buildSubgraphSchema } from "@apollo/subgraph";
 import { gql } from "graphql-tag";
 import type { Resolvers, Post } from "./generated/graphql/post.ts";
+import { CommentServiceClient } from "@travelpedia/comment-service/generated/proto/comment";
+import type { Comment } from "@travelpedia/comment-service/generated/graphql/comment";
 
 const graphqlSchema = await Bun.file("./graphql/post.graphql").text();
 
@@ -21,7 +21,15 @@ async function startGrpcServer() {
   const postServer: PostServiceServer = {
     createPost: (call, callback) => {},
     deletePost: (call, callback) => {},
-    getPost: (call, callback) => {},
+    getPost: (call, callback) => {
+      callback(null, {
+        id: "789",
+        title: "First Post",
+        content: "This is the content of the first post.",
+        author: "tester",
+        createdAt: new Date(),
+      });
+    },
     updatePost: (call, callback) => {},
     listPosts: (call, callback) => {
       callback(null, {
@@ -53,12 +61,38 @@ async function startGraphQLServer() {
     "localhost:50080",
     grpc.credentials.createInsecure(),
   );
+  const commentClient = new CommentServiceClient(
+    "localhost:50081",
+    grpc.credentials.createInsecure(),
+  );
 
   const typeDefs = gql`
     ${graphqlSchema}
   `;
 
   const resolvers: Resolvers = {
+    Post: {
+      __resolveReference: async (reference) => {
+        const calling = async () =>
+          new Promise<Post | null>((resolve, reject) => {
+            console.log("Calling gRPC getPost...");
+            client.getPost({ id: reference.id }, (error, response) => {
+              if (error) {
+                console.error("Error fetching post:", error);
+                reject(error);
+                return;
+              } else {
+                console.log(response);
+
+                resolve(response);
+              }
+            });
+          });
+
+        const post = await calling();
+        return post;
+      },
+    },
     Query: {
       posts: async () => {
         const calling = async () =>
@@ -71,6 +105,7 @@ async function startGraphQLServer() {
                 return;
               } else {
                 console.log(response);
+
                 resolve(response.posts);
               }
             });

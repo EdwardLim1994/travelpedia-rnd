@@ -17,6 +17,7 @@
     "dev": "turbo run dev",
     "test": "turbo run test",
     "build": "turbo run build",
+    "generate": "turbo run generate",
     "supergraph": "rover supergraph compose --config ./supergraph.yaml --output ./dist/supergraph.graphql"
   }
 }

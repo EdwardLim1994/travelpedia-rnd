@@ -1,5 +1,5 @@
 {
-  "name": "post",
+  "name": "@travelpedia/post-service",
   "module": "index.ts",
   "type": "module",
   "private": true,
@@ -27,6 +27,7 @@
     "@apollo/subgraph": "^2.13.0",
     "@grpc/grpc-js": "^1.14.3",
     "graphql": "^16.12.0",
-    "graphql-tag": "^2.12.6"
+    "graphql-tag": "^2.12.6",
+    "@travelpedia/comment-service": "*"
   }
 }

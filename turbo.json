@@ -5,6 +5,7 @@
     "local": {
       "cache": false
     },
+    "generate": {},
     "build": {},
     "dev": {
       "cache": false,

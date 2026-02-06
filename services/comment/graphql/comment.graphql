@@ -1,14 +1,21 @@
 extend schema
-   @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
+   @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@external","@key", "@shareable"])
 
 type Comment @key(fields: "id") {
   id: ID!
   content: String!
   authorId: String!
-  postId: String!
   likeCount: Int!
+  postId: ID! 
+}
+
+extend type Post @key(fields: "id") {
+  id: ID! @external
+  comments: [Comment] 
+
 }
 
 type Query {
   comments: [Comment]
+  comment(id: ID!): Comment
 }

@@ -1,0 +1,78 @@
+
+[0m[2m[35m$[0m [2m[1mbun run gen:proto && bun run gen:graphql[0m
+[0m[2m[35m$[0m [2m[1m$(pwd)/../../node_modules/.bin/protoc --plugin=protoc-gen-ts_proto=$(pwd)/../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./generated/proto --ts_proto_opt=esModuleInterop=true,outputServices=grpc-js,useOptionals=messages --proto_path=./proto ./proto/*.proto[0m
+[0m[2m[35m$[0m [2m[1mgraphql-codegen[0m
+[?25l[2m◼[22m Parse Configuration
+[2K[1A[2K[G[2m◼[22m Parse Configuration
+[2m◼[22m Generate outputs
+[2K[1A[2K[1A[2K[G[33m⠋[39m Parse Configuration
+[2m◼[22m Generate outputs
+[2K[1A[2K[1A[2K[G[32m✔[39m Parse Configuration
+[2m◼[22m Generate outputs
+[2K[1A[2K[1A[2K[G[32m✔[39m Parse Configuration
+[33m⠋[39m Generate outputs
+[2K[1A[2K[1A[2K[G[32m✔[39m Parse Configuration
+[33m❯[39m Generate outputs
+  [2m◼[22m Generate to ./generated/graphql/post.ts
+[2K[1A[2K[1A[2K[1A[2K[G[32m✔[39m Parse Configuration
+[33m❯[39m Generate outputs
+  [33m⠋[39m Generate to ./generated/graphql/post.ts
+[2K[1A[2K[1A[2K[1A[2K[G[32m✔[39m Parse Configuration
+[33m❯[39m Generate outputs
+  [33m❯[39m Generate to ./generated/graphql/post.ts
+    [2m◼[22m Load GraphQL schemas
+[2K[1A[2K[1A[2K[1A[2K[1A[2K[G[32m✔[39m Parse Configuration
+[33m❯[39m Generate outputs
+  [33m❯[39m Generate to ./generated/graphql/post.ts
+    [2m◼[22m Load GraphQL schemas
+    [2m◼[22m Load GraphQL documents
+[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G[32m✔[39m Parse Configuration
+[33m❯[39m Generate outputs
+  [33m❯[39m Generate to ./generated/graphql/post.ts
+    [2m◼[22m Load GraphQL schemas
+    [2m◼[22m Load GraphQL documents
+    [2m◼[22m Generate
+[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G[32m✔[39m Parse Configuration
+[33m❯[39m Generate outputs
+  [33m❯[39m Generate to ./generated/graphql/post.ts
+    [33m⠋[39m Load GraphQL schemas
+    [2m◼[22m Load GraphQL documents
+    [2m◼[22m Generate
+[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G[32m✔[39m Parse Configuration
+[33m❯[39m Generate outputs
+  [33m❯[39m Generate to ./generated/graphql/post.ts
+    [32m✔[39m Load GraphQL schemas
+    [2m◼[22m Load GraphQL documents
+    [2m◼[22m Generate
+[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G[32m✔[39m Parse Configuration
+[33m❯[39m Generate outputs
+  [33m❯[39m Generate to ./generated/graphql/post.ts
+    [32m✔[39m Load GraphQL schemas
+    [33m⠋[39m Load GraphQL documents
+    [2m◼[22m Generate
+[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G[32m✔[39m Parse Configuration
+[33m❯[39m Generate outputs
+  [33m❯[39m Generate to ./generated/graphql/post.ts
+    [32m✔[39m Load GraphQL schemas
+    [32m✔[39m Load GraphQL documents
+    [2m◼[22m Generate
+[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G[32m✔[39m Parse Configuration
+[33m❯[39m Generate outputs
+  [33m❯[39m Generate to ./generated/graphql/post.ts
+    [32m✔[39m Load GraphQL schemas
+    [32m✔[39m Load GraphQL documents
+    [33m⠋[39m Generate
+[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G[32m✔[39m Parse Configuration
+[33m❯[39m Generate outputs
+  [33m❯[39m Generate to ./generated/graphql/post.ts
+    [32m✔[39m Load GraphQL schemas
+    [32m✔[39m Load GraphQL documents
+    [32m✔[39m Generate
+[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[G[32m✔[39m Parse Configuration
+[33m❯[39m Generate outputs
+  [32m✔[39m Generate to ./generated/graphql/post.ts
+[2K[1A[2K[1A[2K[1A[2K[G[32m✔[39m Parse Configuration
+[32m✔[39m Generate outputs
+[2K[1A[2K[1A[2K[G[32m✔[39m Parse Configuration
+[32m✔[39m Generate outputs
+[?25h[?25h
