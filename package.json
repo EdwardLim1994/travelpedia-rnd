@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@apollo/rover": "^0.37.0",
-    "turbo": "^2.7.3"
+    "turbo": "^2.8.3"
   },
   "workspaces": [
     "apps/*",

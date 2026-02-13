@@ -10,3 +10,7 @@ type Post @key(fields: "id"){
 type Query{
   posts: [Post]
 }
+
+type Mutation {
+  createPost(title: String!, content: String!): Post
+}

@@ -57,6 +57,24 @@ export interface ListPostsResponse {
   posts: Post[];
 }
 
+export interface ResponseEnvelope {
+  requestId: string;
+  timestamp?: Date | undefined;
+  post?: Post | undefined;
+  listPostsResponse?: ListPostsResponse | undefined;
+  emptyResponse?: Empty | undefined;
+}
+
+export interface RequestEnvelope {
+  requestId: string;
+  timestamp?: Date | undefined;
+  createPostRequest?: CreatePostRequest | undefined;
+  getPostRequest?: GetPostRequest | undefined;
+  updatePostRequest?: UpdatePostRequest | undefined;
+  deletePostRequest?: DeletePostRequest | undefined;
+  listPostsRequest?: Empty | undefined;
+}
+
 function createBasePost(): Post {
   return { id: "", title: "", content: "", author: "", createdAt: undefined };
 }
@@ -539,6 +557,350 @@ export const ListPostsResponse: MessageFns<ListPostsResponse> = {
   fromPartial<I extends Exact<DeepPartial<ListPostsResponse>, I>>(object: I): ListPostsResponse {
     const message = createBaseListPostsResponse();
     message.posts = object.posts?.map((e) => Post.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseResponseEnvelope(): ResponseEnvelope {
+  return {
+    requestId: "",
+    timestamp: undefined,
+    post: undefined,
+    listPostsResponse: undefined,
+    emptyResponse: undefined,
+  };
+}
+
+export const ResponseEnvelope: MessageFns<ResponseEnvelope> = {
+  encode(message: ResponseEnvelope, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.requestId !== "") {
+      writer.uint32(10).string(message.requestId);
+    }
+    if (message.timestamp !== undefined) {
+      Timestamp.encode(toTimestamp(message.timestamp), writer.uint32(18).fork()).join();
+    }
+    if (message.post !== undefined) {
+      Post.encode(message.post, writer.uint32(26).fork()).join();
+    }
+    if (message.listPostsResponse !== undefined) {
+      ListPostsResponse.encode(message.listPostsResponse, writer.uint32(34).fork()).join();
+    }
+    if (message.emptyResponse !== undefined) {
+      Empty.encode(message.emptyResponse, writer.uint32(42).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ResponseEnvelope {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseResponseEnvelope();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.requestId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.timestamp = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.post = Post.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.listPostsResponse = ListPostsResponse.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.emptyResponse = Empty.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ResponseEnvelope {
+    return {
+      requestId: isSet(object.requestId)
+        ? globalThis.String(object.requestId)
+        : isSet(object.request_id)
+        ? globalThis.String(object.request_id)
+        : "",
+      timestamp: isSet(object.timestamp) ? fromJsonTimestamp(object.timestamp) : undefined,
+      post: isSet(object.post) ? Post.fromJSON(object.post) : undefined,
+      listPostsResponse: isSet(object.listPostsResponse)
+        ? ListPostsResponse.fromJSON(object.listPostsResponse)
+        : isSet(object.list_posts_response)
+        ? ListPostsResponse.fromJSON(object.list_posts_response)
+        : undefined,
+      emptyResponse: isSet(object.emptyResponse)
+        ? Empty.fromJSON(object.emptyResponse)
+        : isSet(object.empty_response)
+        ? Empty.fromJSON(object.empty_response)
+        : undefined,
+    };
+  },
+
+  toJSON(message: ResponseEnvelope): unknown {
+    const obj: any = {};
+    if (message.requestId !== "") {
+      obj.requestId = message.requestId;
+    }
+    if (message.timestamp !== undefined) {
+      obj.timestamp = message.timestamp.toISOString();
+    }
+    if (message.post !== undefined) {
+      obj.post = Post.toJSON(message.post);
+    }
+    if (message.listPostsResponse !== undefined) {
+      obj.listPostsResponse = ListPostsResponse.toJSON(message.listPostsResponse);
+    }
+    if (message.emptyResponse !== undefined) {
+      obj.emptyResponse = Empty.toJSON(message.emptyResponse);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ResponseEnvelope>, I>>(base?: I): ResponseEnvelope {
+    return ResponseEnvelope.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ResponseEnvelope>, I>>(object: I): ResponseEnvelope {
+    const message = createBaseResponseEnvelope();
+    message.requestId = object.requestId ?? "";
+    message.timestamp = object.timestamp ?? undefined;
+    message.post = (object.post !== undefined && object.post !== null) ? Post.fromPartial(object.post) : undefined;
+    message.listPostsResponse = (object.listPostsResponse !== undefined && object.listPostsResponse !== null)
+      ? ListPostsResponse.fromPartial(object.listPostsResponse)
+      : undefined;
+    message.emptyResponse = (object.emptyResponse !== undefined && object.emptyResponse !== null)
+      ? Empty.fromPartial(object.emptyResponse)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseRequestEnvelope(): RequestEnvelope {
+  return {
+    requestId: "",
+    timestamp: undefined,
+    createPostRequest: undefined,
+    getPostRequest: undefined,
+    updatePostRequest: undefined,
+    deletePostRequest: undefined,
+    listPostsRequest: undefined,
+  };
+}
+
+export const RequestEnvelope: MessageFns<RequestEnvelope> = {
+  encode(message: RequestEnvelope, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.requestId !== "") {
+      writer.uint32(10).string(message.requestId);
+    }
+    if (message.timestamp !== undefined) {
+      Timestamp.encode(toTimestamp(message.timestamp), writer.uint32(18).fork()).join();
+    }
+    if (message.createPostRequest !== undefined) {
+      CreatePostRequest.encode(message.createPostRequest, writer.uint32(26).fork()).join();
+    }
+    if (message.getPostRequest !== undefined) {
+      GetPostRequest.encode(message.getPostRequest, writer.uint32(34).fork()).join();
+    }
+    if (message.updatePostRequest !== undefined) {
+      UpdatePostRequest.encode(message.updatePostRequest, writer.uint32(42).fork()).join();
+    }
+    if (message.deletePostRequest !== undefined) {
+      DeletePostRequest.encode(message.deletePostRequest, writer.uint32(50).fork()).join();
+    }
+    if (message.listPostsRequest !== undefined) {
+      Empty.encode(message.listPostsRequest, writer.uint32(58).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RequestEnvelope {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRequestEnvelope();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.requestId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.timestamp = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.createPostRequest = CreatePostRequest.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.getPostRequest = GetPostRequest.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.updatePostRequest = UpdatePostRequest.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.deletePostRequest = DeletePostRequest.decode(reader, reader.uint32());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.listPostsRequest = Empty.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RequestEnvelope {
+    return {
+      requestId: isSet(object.requestId)
+        ? globalThis.String(object.requestId)
+        : isSet(object.request_id)
+        ? globalThis.String(object.request_id)
+        : "",
+      timestamp: isSet(object.timestamp) ? fromJsonTimestamp(object.timestamp) : undefined,
+      createPostRequest: isSet(object.createPostRequest)
+        ? CreatePostRequest.fromJSON(object.createPostRequest)
+        : isSet(object.create_post_request)
+        ? CreatePostRequest.fromJSON(object.create_post_request)
+        : undefined,
+      getPostRequest: isSet(object.getPostRequest)
+        ? GetPostRequest.fromJSON(object.getPostRequest)
+        : isSet(object.get_post_request)
+        ? GetPostRequest.fromJSON(object.get_post_request)
+        : undefined,
+      updatePostRequest: isSet(object.updatePostRequest)
+        ? UpdatePostRequest.fromJSON(object.updatePostRequest)
+        : isSet(object.update_post_request)
+        ? UpdatePostRequest.fromJSON(object.update_post_request)
+        : undefined,
+      deletePostRequest: isSet(object.deletePostRequest)
+        ? DeletePostRequest.fromJSON(object.deletePostRequest)
+        : isSet(object.delete_post_request)
+        ? DeletePostRequest.fromJSON(object.delete_post_request)
+        : undefined,
+      listPostsRequest: isSet(object.listPostsRequest)
+        ? Empty.fromJSON(object.listPostsRequest)
+        : isSet(object.list_posts_request)
+        ? Empty.fromJSON(object.list_posts_request)
+        : undefined,
+    };
+  },
+
+  toJSON(message: RequestEnvelope): unknown {
+    const obj: any = {};
+    if (message.requestId !== "") {
+      obj.requestId = message.requestId;
+    }
+    if (message.timestamp !== undefined) {
+      obj.timestamp = message.timestamp.toISOString();
+    }
+    if (message.createPostRequest !== undefined) {
+      obj.createPostRequest = CreatePostRequest.toJSON(message.createPostRequest);
+    }
+    if (message.getPostRequest !== undefined) {
+      obj.getPostRequest = GetPostRequest.toJSON(message.getPostRequest);
+    }
+    if (message.updatePostRequest !== undefined) {
+      obj.updatePostRequest = UpdatePostRequest.toJSON(message.updatePostRequest);
+    }
+    if (message.deletePostRequest !== undefined) {
+      obj.deletePostRequest = DeletePostRequest.toJSON(message.deletePostRequest);
+    }
+    if (message.listPostsRequest !== undefined) {
+      obj.listPostsRequest = Empty.toJSON(message.listPostsRequest);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RequestEnvelope>, I>>(base?: I): RequestEnvelope {
+    return RequestEnvelope.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RequestEnvelope>, I>>(object: I): RequestEnvelope {
+    const message = createBaseRequestEnvelope();
+    message.requestId = object.requestId ?? "";
+    message.timestamp = object.timestamp ?? undefined;
+    message.createPostRequest = (object.createPostRequest !== undefined && object.createPostRequest !== null)
+      ? CreatePostRequest.fromPartial(object.createPostRequest)
+      : undefined;
+    message.getPostRequest = (object.getPostRequest !== undefined && object.getPostRequest !== null)
+      ? GetPostRequest.fromPartial(object.getPostRequest)
+      : undefined;
+    message.updatePostRequest = (object.updatePostRequest !== undefined && object.updatePostRequest !== null)
+      ? UpdatePostRequest.fromPartial(object.updatePostRequest)
+      : undefined;
+    message.deletePostRequest = (object.deletePostRequest !== undefined && object.deletePostRequest !== null)
+      ? DeletePostRequest.fromPartial(object.deletePostRequest)
+      : undefined;
+    message.listPostsRequest = (object.listPostsRequest !== undefined && object.listPostsRequest !== null)
+      ? Empty.fromPartial(object.listPostsRequest)
+      : undefined;
     return message;
   },
 };

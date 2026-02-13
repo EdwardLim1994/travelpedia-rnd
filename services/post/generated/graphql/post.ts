@@ -7,6 +7,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -14,6 +15,17 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createPost?: Maybe<Post>;
+};
+
+
+export type MutationCreatePostArgs = {
+  content: Scalars['String']['input'];
+  title: Scalars['String']['input'];
 };
 
 export type Post = {
@@ -104,6 +116,7 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Post: ResolverTypeWrapper<Post>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -113,9 +126,14 @@ export type ResolversTypes = ResolversObject<{
 export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
   ID: Scalars['ID']['output'];
+  Mutation: Record<PropertyKey, never>;
   Post: Post;
   Query: Record<PropertyKey, never>;
   String: Scalars['String']['output'];
+}>;
+
+export type MutationResolvers<ContextType = PostContextType, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  createPost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'content' | 'title'>>;
 }>;
 
 export type PostResolvers<ContextType = PostContextType, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = ResolversObject<{
@@ -129,6 +147,7 @@ export type QueryResolvers<ContextType = PostContextType, ParentType extends Res
 }>;
 
 export type Resolvers<ContextType = PostContextType> = ResolversObject<{
+  Mutation?: MutationResolvers<ContextType>;
   Post?: PostResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
 }>;

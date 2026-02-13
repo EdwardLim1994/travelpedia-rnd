@@ -1,0 +1,13 @@
+{
+  "name": "@travelpedia/libs",
+  "private": true,
+  "exports": {
+    "./interfaces": "./interfaces/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

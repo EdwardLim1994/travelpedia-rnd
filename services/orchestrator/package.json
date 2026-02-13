@@ -1,0 +1,21 @@
+{
+  "name": "@travelpedia/orchestrator",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run --watch ./index.ts",
+    "gen:proto": "$(pwd)/../../node_modules/.bin/protoc --plugin=protoc-gen-ts_proto=$(pwd)/../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./generated/proto --ts_proto_opt=esModuleInterop=true,outputServices=grpc-js,useOptionals=messages --proto_path=./proto ./proto/*.proto",
+    "generate": "bun run gen:proto"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "protoc": "^33.5.0",
+    "ts-proto": "^2.11.2"
+  },
+  "dependencies": {
+    "@travelpedia/libs": "workspace:*",
+    "@grpc/grpc-js": "^1.14.3",
+    "@travelpedia/post-service": "workspace:*",
+    "kafkajs": "^2.2.4"
+  }
+}

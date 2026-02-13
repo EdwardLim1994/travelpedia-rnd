@@ -1,0 +1,4 @@
+
+[0m[2m[35m$[0m [2m[1mbun run gen:proto[0m
+[0m[2m[35m$[0m [2m[1m$(pwd)/../../node_modules/.bin/protoc --plugin=protoc-gen-ts_proto=$(pwd)/../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./generated/proto --ts_proto_opt=esModuleInterop=true,outputServices=grpc-js,useOptionals=messages --proto_path=./proto ./proto/*.proto[0m
+proto/orchestrator.proto:6:1: warning: Import google/protobuf/timestamp.proto is unused.

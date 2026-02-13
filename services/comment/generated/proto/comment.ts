@@ -53,6 +53,24 @@ export interface ListCommentsResponse {
   nextPageToken: string;
 }
 
+export interface RequestEnvelope {
+  requestId: string;
+  timestamp?: Date | undefined;
+  createCommentRequest?: CreateCommentRequest | undefined;
+  getCommentRequest?: GetCommentRequest | undefined;
+  updateCommentRequest?: UpdateCommentRequest | undefined;
+  deleteCommentRequest?: DeleteCommentRequest | undefined;
+  listCommentsRequest?: ListCommentsRequest | undefined;
+}
+
+export interface RequestEnvelope_ResponseEnvelope {
+  requestId: string;
+  timestamp?: Date | undefined;
+  comment?: Comment | undefined;
+  listCommentsResponse?: ListCommentsResponse | undefined;
+  emptyResponse?: Empty | undefined;
+}
+
 /** The core Comment message (from our previous step) */
 export interface Comment {
   id: string;
@@ -535,6 +553,356 @@ export const ListCommentsResponse: MessageFns<ListCommentsResponse> = {
     const message = createBaseListCommentsResponse();
     message.comments = object.comments?.map((e) => Comment.fromPartial(e)) || [];
     message.nextPageToken = object.nextPageToken ?? "";
+    return message;
+  },
+};
+
+function createBaseRequestEnvelope(): RequestEnvelope {
+  return {
+    requestId: "",
+    timestamp: undefined,
+    createCommentRequest: undefined,
+    getCommentRequest: undefined,
+    updateCommentRequest: undefined,
+    deleteCommentRequest: undefined,
+    listCommentsRequest: undefined,
+  };
+}
+
+export const RequestEnvelope: MessageFns<RequestEnvelope> = {
+  encode(message: RequestEnvelope, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.requestId !== "") {
+      writer.uint32(10).string(message.requestId);
+    }
+    if (message.timestamp !== undefined) {
+      Timestamp.encode(toTimestamp(message.timestamp), writer.uint32(18).fork()).join();
+    }
+    if (message.createCommentRequest !== undefined) {
+      CreateCommentRequest.encode(message.createCommentRequest, writer.uint32(26).fork()).join();
+    }
+    if (message.getCommentRequest !== undefined) {
+      GetCommentRequest.encode(message.getCommentRequest, writer.uint32(34).fork()).join();
+    }
+    if (message.updateCommentRequest !== undefined) {
+      UpdateCommentRequest.encode(message.updateCommentRequest, writer.uint32(42).fork()).join();
+    }
+    if (message.deleteCommentRequest !== undefined) {
+      DeleteCommentRequest.encode(message.deleteCommentRequest, writer.uint32(50).fork()).join();
+    }
+    if (message.listCommentsRequest !== undefined) {
+      ListCommentsRequest.encode(message.listCommentsRequest, writer.uint32(58).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RequestEnvelope {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRequestEnvelope();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.requestId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.timestamp = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.createCommentRequest = CreateCommentRequest.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.getCommentRequest = GetCommentRequest.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.updateCommentRequest = UpdateCommentRequest.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.deleteCommentRequest = DeleteCommentRequest.decode(reader, reader.uint32());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.listCommentsRequest = ListCommentsRequest.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RequestEnvelope {
+    return {
+      requestId: isSet(object.requestId)
+        ? globalThis.String(object.requestId)
+        : isSet(object.request_id)
+        ? globalThis.String(object.request_id)
+        : "",
+      timestamp: isSet(object.timestamp) ? fromJsonTimestamp(object.timestamp) : undefined,
+      createCommentRequest: isSet(object.createCommentRequest)
+        ? CreateCommentRequest.fromJSON(object.createCommentRequest)
+        : isSet(object.create_comment_request)
+        ? CreateCommentRequest.fromJSON(object.create_comment_request)
+        : undefined,
+      getCommentRequest: isSet(object.getCommentRequest)
+        ? GetCommentRequest.fromJSON(object.getCommentRequest)
+        : isSet(object.get_comment_request)
+        ? GetCommentRequest.fromJSON(object.get_comment_request)
+        : undefined,
+      updateCommentRequest: isSet(object.updateCommentRequest)
+        ? UpdateCommentRequest.fromJSON(object.updateCommentRequest)
+        : isSet(object.update_comment_request)
+        ? UpdateCommentRequest.fromJSON(object.update_comment_request)
+        : undefined,
+      deleteCommentRequest: isSet(object.deleteCommentRequest)
+        ? DeleteCommentRequest.fromJSON(object.deleteCommentRequest)
+        : isSet(object.delete_comment_request)
+        ? DeleteCommentRequest.fromJSON(object.delete_comment_request)
+        : undefined,
+      listCommentsRequest: isSet(object.listCommentsRequest)
+        ? ListCommentsRequest.fromJSON(object.listCommentsRequest)
+        : isSet(object.list_comments_request)
+        ? ListCommentsRequest.fromJSON(object.list_comments_request)
+        : undefined,
+    };
+  },
+
+  toJSON(message: RequestEnvelope): unknown {
+    const obj: any = {};
+    if (message.requestId !== "") {
+      obj.requestId = message.requestId;
+    }
+    if (message.timestamp !== undefined) {
+      obj.timestamp = message.timestamp.toISOString();
+    }
+    if (message.createCommentRequest !== undefined) {
+      obj.createCommentRequest = CreateCommentRequest.toJSON(message.createCommentRequest);
+    }
+    if (message.getCommentRequest !== undefined) {
+      obj.getCommentRequest = GetCommentRequest.toJSON(message.getCommentRequest);
+    }
+    if (message.updateCommentRequest !== undefined) {
+      obj.updateCommentRequest = UpdateCommentRequest.toJSON(message.updateCommentRequest);
+    }
+    if (message.deleteCommentRequest !== undefined) {
+      obj.deleteCommentRequest = DeleteCommentRequest.toJSON(message.deleteCommentRequest);
+    }
+    if (message.listCommentsRequest !== undefined) {
+      obj.listCommentsRequest = ListCommentsRequest.toJSON(message.listCommentsRequest);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RequestEnvelope>, I>>(base?: I): RequestEnvelope {
+    return RequestEnvelope.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RequestEnvelope>, I>>(object: I): RequestEnvelope {
+    const message = createBaseRequestEnvelope();
+    message.requestId = object.requestId ?? "";
+    message.timestamp = object.timestamp ?? undefined;
+    message.createCommentRequest = (object.createCommentRequest !== undefined && object.createCommentRequest !== null)
+      ? CreateCommentRequest.fromPartial(object.createCommentRequest)
+      : undefined;
+    message.getCommentRequest = (object.getCommentRequest !== undefined && object.getCommentRequest !== null)
+      ? GetCommentRequest.fromPartial(object.getCommentRequest)
+      : undefined;
+    message.updateCommentRequest = (object.updateCommentRequest !== undefined && object.updateCommentRequest !== null)
+      ? UpdateCommentRequest.fromPartial(object.updateCommentRequest)
+      : undefined;
+    message.deleteCommentRequest = (object.deleteCommentRequest !== undefined && object.deleteCommentRequest !== null)
+      ? DeleteCommentRequest.fromPartial(object.deleteCommentRequest)
+      : undefined;
+    message.listCommentsRequest = (object.listCommentsRequest !== undefined && object.listCommentsRequest !== null)
+      ? ListCommentsRequest.fromPartial(object.listCommentsRequest)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseRequestEnvelope_ResponseEnvelope(): RequestEnvelope_ResponseEnvelope {
+  return {
+    requestId: "",
+    timestamp: undefined,
+    comment: undefined,
+    listCommentsResponse: undefined,
+    emptyResponse: undefined,
+  };
+}
+
+export const RequestEnvelope_ResponseEnvelope: MessageFns<RequestEnvelope_ResponseEnvelope> = {
+  encode(message: RequestEnvelope_ResponseEnvelope, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.requestId !== "") {
+      writer.uint32(10).string(message.requestId);
+    }
+    if (message.timestamp !== undefined) {
+      Timestamp.encode(toTimestamp(message.timestamp), writer.uint32(18).fork()).join();
+    }
+    if (message.comment !== undefined) {
+      Comment.encode(message.comment, writer.uint32(26).fork()).join();
+    }
+    if (message.listCommentsResponse !== undefined) {
+      ListCommentsResponse.encode(message.listCommentsResponse, writer.uint32(34).fork()).join();
+    }
+    if (message.emptyResponse !== undefined) {
+      Empty.encode(message.emptyResponse, writer.uint32(42).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RequestEnvelope_ResponseEnvelope {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRequestEnvelope_ResponseEnvelope();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.requestId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.timestamp = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.comment = Comment.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.listCommentsResponse = ListCommentsResponse.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.emptyResponse = Empty.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RequestEnvelope_ResponseEnvelope {
+    return {
+      requestId: isSet(object.requestId)
+        ? globalThis.String(object.requestId)
+        : isSet(object.request_id)
+        ? globalThis.String(object.request_id)
+        : "",
+      timestamp: isSet(object.timestamp) ? fromJsonTimestamp(object.timestamp) : undefined,
+      comment: isSet(object.comment) ? Comment.fromJSON(object.comment) : undefined,
+      listCommentsResponse: isSet(object.listCommentsResponse)
+        ? ListCommentsResponse.fromJSON(object.listCommentsResponse)
+        : isSet(object.list_comments_response)
+        ? ListCommentsResponse.fromJSON(object.list_comments_response)
+        : undefined,
+      emptyResponse: isSet(object.emptyResponse)
+        ? Empty.fromJSON(object.emptyResponse)
+        : isSet(object.empty_response)
+        ? Empty.fromJSON(object.empty_response)
+        : undefined,
+    };
+  },
+
+  toJSON(message: RequestEnvelope_ResponseEnvelope): unknown {
+    const obj: any = {};
+    if (message.requestId !== "") {
+      obj.requestId = message.requestId;
+    }
+    if (message.timestamp !== undefined) {
+      obj.timestamp = message.timestamp.toISOString();
+    }
+    if (message.comment !== undefined) {
+      obj.comment = Comment.toJSON(message.comment);
+    }
+    if (message.listCommentsResponse !== undefined) {
+      obj.listCommentsResponse = ListCommentsResponse.toJSON(message.listCommentsResponse);
+    }
+    if (message.emptyResponse !== undefined) {
+      obj.emptyResponse = Empty.toJSON(message.emptyResponse);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RequestEnvelope_ResponseEnvelope>, I>>(
+    base?: I,
+  ): RequestEnvelope_ResponseEnvelope {
+    return RequestEnvelope_ResponseEnvelope.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RequestEnvelope_ResponseEnvelope>, I>>(
+    object: I,
+  ): RequestEnvelope_ResponseEnvelope {
+    const message = createBaseRequestEnvelope_ResponseEnvelope();
+    message.requestId = object.requestId ?? "";
+    message.timestamp = object.timestamp ?? undefined;
+    message.comment = (object.comment !== undefined && object.comment !== null)
+      ? Comment.fromPartial(object.comment)
+      : undefined;
+    message.listCommentsResponse = (object.listCommentsResponse !== undefined && object.listCommentsResponse !== null)
+      ? ListCommentsResponse.fromPartial(object.listCommentsResponse)
+      : undefined;
+    message.emptyResponse = (object.emptyResponse !== undefined && object.emptyResponse !== null)
+      ? Empty.fromPartial(object.emptyResponse)
+      : undefined;
     return message;
   },
 };

@@ -55,6 +55,28 @@ message ListCommentsResponse {
   string next_page_token = 2;
 }
 
+message RequestEnvelope{
+  string request_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  oneof payload {
+    CreateCommentRequest create_comment_request = 3;
+    GetCommentRequest get_comment_request = 4;
+    UpdateCommentRequest update_comment_request = 5;
+    DeleteCommentRequest delete_comment_request = 6;
+    ListCommentsRequest list_comments_request = 7;
+  }
+
+  message ResponseEnvelope{
+    string request_id = 1;
+    google.protobuf.Timestamp timestamp = 2;
+    oneof payload {
+      Comment comment = 3;
+      ListCommentsResponse list_comments_response = 4;
+      google.protobuf.Empty empty_response = 5;
+    }
+  }
+}
+
 // The core Comment message (from our previous step)
 message Comment {
   string id = 1;

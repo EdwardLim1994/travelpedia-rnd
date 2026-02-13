@@ -39,6 +39,28 @@ message ListPostsResponse {
   repeated Post posts = 1;
 }
 
+message ResponseEnvelope{
+  string request_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  oneof payload {
+    Post post = 3;
+    ListPostsResponse list_posts_response = 4;
+    google.protobuf.Empty empty_response = 5;
+  }
+}
+
+message RequestEnvelope{
+  string request_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  oneof payload {
+    CreatePostRequest create_post_request = 3;
+    GetPostRequest get_post_request = 4;
+    UpdatePostRequest update_post_request = 5;
+    DeletePostRequest delete_post_request = 6;
+    google.protobuf.Empty list_posts_request = 7;
+  }
+}
+
 // The CRUD Service
 service PostService {
   rpc CreatePost (CreatePostRequest) returns (Post);
