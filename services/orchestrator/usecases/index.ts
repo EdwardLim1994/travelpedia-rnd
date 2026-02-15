@@ -1,2 +1,1 @@
-export * from "./TestUseCase.ts";
-export * from "./Test2UseCase.ts";
+export * from "./CreatePostUseCase.ts";

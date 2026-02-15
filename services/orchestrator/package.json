@@ -13,9 +13,9 @@
     "ts-proto": "^2.11.2"
   },
   "dependencies": {
-    "@travelpedia/libs": "workspace:*",
     "@grpc/grpc-js": "^1.14.3",
     "@travelpedia/post-service": "workspace:*",
+    "@travelpedia/common": "workspace:*",
     "kafkajs": "^2.2.4"
   }
 }

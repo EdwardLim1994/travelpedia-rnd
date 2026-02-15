@@ -6,12 +6,12 @@ import {
   OrchestratorServiceService,
   type OrchestratorServiceServer,
 } from "./generated/proto/orchestrator";
-import { DependencyContainer, KafkaClient } from "./utils";
+import { DependencyContainer } from "./utils";
+import { KafkaClient } from "@travelpedia/common/client";
 import { PostService } from "./services";
 import * as grpc from "@grpc/grpc-js";
-import { Test2UseCase, TestUseCase } from "./usecases";
-import { UseCasesBuilder } from "./utils/UseCasesBuilder";
-import { UseCaseRunner } from "./utils/UseCaseRunner";
+import { UseCaseRunner } from "./utils/";
+import { CreatePostUseCase } from "./usecases/";
 
 const postClient = new PostServiceClient(
   "localhost:50080",
@@ -62,12 +62,16 @@ async function startGrpcServer() {
     );
 
   try {
-    const tasks = UseCasesBuilder.init()
-      .prepare("Test 1", new TestUseCase())
-      .prepare("Test 2", new Test2UseCase())
-      .build();
-
-    await UseCaseRunner.run(tasks);
+    await UseCaseRunner.init()
+      .prepare(
+        "Create Post",
+        CreatePostUseCase.init({
+          title: "title",
+          content: "content",
+          author: "author",
+        }),
+      )
+      .run();
   } catch (error) {
     console.error("Error running use cases:", error);
   }

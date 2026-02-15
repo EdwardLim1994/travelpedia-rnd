@@ -1,14 +1,35 @@
-import type { UseCaseReversibleOperation } from "../libs/interfaces";
+import type { UseCaseReversibleOperation } from "../interfaces";
 
 export class UseCaseRunner {
-  static async run(useCases: Map<string, UseCaseReversibleOperation>) {
+  private tasks: Map<string, UseCaseReversibleOperation> = new Map<
+    string,
+    UseCaseReversibleOperation
+  >();
+
+  private constructor() {}
+
+  public static init(): UseCaseRunner {
+    return new UseCaseRunner();
+  }
+
+  public prepare(name: string, useCase: UseCaseReversibleOperation): this {
+    this.tasks.set(name, useCase);
+    return this;
+  }
+
+  public async run(): Promise<void> {
+    if (this.tasks.size === 0) {
+      console.warn("No use cases to execute.");
+      return;
+    }
+
     const finishedUseCases: {
       name: string;
       useCase: UseCaseReversibleOperation;
     }[] = [];
     let isSuccessful = true;
 
-    for (const [name, useCase] of useCases) {
+    for (const [name, useCase] of this.tasks) {
       try {
         console.log(`Executing use case: ${name}`);
         await useCase.execute();

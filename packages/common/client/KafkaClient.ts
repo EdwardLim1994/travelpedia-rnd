@@ -14,9 +14,9 @@ export class KafkaClient {
     return new KafkaClient(clientId);
   }
 
-  public async runProducer(payload: Uint8Array, topic: string): Promise<void> {
+  public async produce(payload: Uint8Array, topic: string): Promise<void> {
     try {
-      const producer = this.kafka.producer();
+      const producer: Producer = this.kafka.producer();
       await producer.connect();
       await producer.send({
         topic,

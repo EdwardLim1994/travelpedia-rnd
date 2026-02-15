@@ -1,8 +1,10 @@
 {
-  "name": "@travelpedia/libs",
+  "name": "@travelpedia/common",
+  "type": "module",
   "private": true,
   "exports": {
-    "./interfaces": "./interfaces/index.ts"
+    "./util": "./util/index.ts",
+    "./client": "./client/index.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"
