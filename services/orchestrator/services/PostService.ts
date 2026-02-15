@@ -3,7 +3,7 @@ import {
   CreatePostRequest,
   DeletePostRequest,
 } from "@travelpedia/post-service/generated/proto";
-import type { KafkaClient } from "../utils";
+import { KafkaClient } from "@travelpedia/common/client";
 
 export class PostService {
   constructor(
@@ -37,7 +37,7 @@ export class PostService {
     try {
       if (isAsync) {
         const binary = DeletePostRequest.encode(request).finish();
-        await this.kafkaClient.runProducer(binary, "delete-post");
+        await this.kafkaClient.produce(binary, "delete-post");
         return;
       }
 
