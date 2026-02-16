@@ -13,25 +13,20 @@ import * as grpc from "@grpc/grpc-js";
 import { UseCaseRunner } from "./utils/";
 import { CreatePostUseCase } from "./usecases/";
 
-const postClient = new PostServiceClient(
-  "localhost:50080",
-  grpc.credentials.createInsecure(),
-);
 async function startGrpcServer() {
   const server = new grpc.Server();
 
   const orchestratorServer: OrchestratorServiceServer = {
     createPost: async (call, callback) => {
       try {
-        const useCase = CreatePostUseCase.init();
-        const req: CreatePostRequest = {
-          ...call.request,
-          author: "",
-        };
+        const request = call.request as unknown;
 
-        const res = await useCase.execute(req);
+        const postRequest = request as CreatePostRequest;
+        await UseCaseRunner.init()
+          .prepare("Create Post", CreatePostUseCase.init(postRequest))
+          .run();
 
-        callback(null, res);
+        callback(null, { success: true });
       } catch (err) {
         callback(err as Error, null);
       }
@@ -54,6 +49,11 @@ async function startGrpcServer() {
 }
 
 (async () => {
+  const postClient = new PostServiceClient(
+    "localhost:50080",
+    grpc.credentials.createInsecure(),
+  );
+
   DependencyContainer.getInstance()
     .register("PostServiceClient", postClient)
     .register(
@@ -62,23 +62,8 @@ async function startGrpcServer() {
     );
 
   try {
-    await UseCaseRunner.init()
-      .prepare(
-        "Create Post",
-        CreatePostUseCase.init({
-          title: "title",
-          content: "content",
-          author: "author",
-        }),
-      )
-      .run();
-  } catch (error) {
-    console.error("Error running use cases:", error);
+    await startGrpcServer();
+  } catch (err) {
+    console.error("Failed to start gRPC server:", err);
   }
-
-  // try {
-  //   await startGrpcServer();
-  // } catch (err) {
-  //   console.error("Failed to start gRPC server:", err);
-  // }
 })();

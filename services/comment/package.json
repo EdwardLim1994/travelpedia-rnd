@@ -6,7 +6,7 @@
   "scripts": {
     "gen:subgraph": "rover subgraph introspect http://localhost:4081 --output ../../dist/comment-subgraph.graphql",
     "gen:graphql": "graphql-codegen",
-    "gen:proto": "$(pwd)/../../node_modules/.bin/protoc --plugin=protoc-gen-ts_proto=$(pwd)/../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./generated/proto --ts_proto_opt=esModuleInterop=true,useOptionals=messages,outputServices=grpc-js --proto_path=./proto ./proto/*.proto",
+    "gen:proto": "$(pwd)/node_modules/.bin/protoc --plugin=protoc-gen-ts_proto=$(pwd)/node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./generated/proto --ts_proto_opt=esModuleInterop=true,useOptionals=messages,outputServices=grpc-js --proto_path=./proto ./proto/*.proto",
     "generate": "bun run gen:proto && bun run gen:graphql",
     "dev": "bun run --watch index.ts"  
   },

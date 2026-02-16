@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "bun run --watch ./index.ts",
-    "gen:proto": "$(pwd)/../../node_modules/.bin/protoc --plugin=protoc-gen-ts_proto=$(pwd)/../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./generated/proto --ts_proto_opt=esModuleInterop=true,outputServices=grpc-js,useOptionals=messages --proto_path=./proto ./proto/*.proto",
+    "gen:proto": "$(pwd)/node_modules/.bin/protoc --plugin=protoc-gen-ts_proto=$(pwd)/node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./generated/proto --ts_proto_opt=esModuleInterop=true,outputServices=grpc-js,useOptionals=messages --proto_path=./proto ./proto/*.proto",
     "generate": "bun run gen:proto"
   },
   "devDependencies": {
