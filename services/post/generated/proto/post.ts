@@ -39,6 +39,10 @@ export interface CreatePostRequest {
   author: string;
 }
 
+export interface CreatePostResponse {
+  post?: Post | undefined;
+}
+
 export interface GetPostRequest {
   id: string;
 }
@@ -291,6 +295,64 @@ export const CreatePostRequest: MessageFns<CreatePostRequest> = {
     message.title = object.title ?? "";
     message.content = object.content ?? "";
     message.author = object.author ?? "";
+    return message;
+  },
+};
+
+function createBaseCreatePostResponse(): CreatePostResponse {
+  return { post: undefined };
+}
+
+export const CreatePostResponse: MessageFns<CreatePostResponse> = {
+  encode(message: CreatePostResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.post !== undefined) {
+      Post.encode(message.post, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreatePostResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreatePostResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.post = Post.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CreatePostResponse {
+    return { post: isSet(object.post) ? Post.fromJSON(object.post) : undefined };
+  },
+
+  toJSON(message: CreatePostResponse): unknown {
+    const obj: any = {};
+    if (message.post !== undefined) {
+      obj.post = Post.toJSON(message.post);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CreatePostResponse>, I>>(base?: I): CreatePostResponse {
+    return CreatePostResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<CreatePostResponse>, I>>(object: I): CreatePostResponse {
+    const message = createBaseCreatePostResponse();
+    message.post = (object.post !== undefined && object.post !== null) ? Post.fromPartial(object.post) : undefined;
     return message;
   },
 };
@@ -914,8 +976,8 @@ export const PostServiceService = {
     responseStream: false,
     requestSerialize: (value: CreatePostRequest): Buffer => Buffer.from(CreatePostRequest.encode(value).finish()),
     requestDeserialize: (value: Buffer): CreatePostRequest => CreatePostRequest.decode(value),
-    responseSerialize: (value: Post): Buffer => Buffer.from(Post.encode(value).finish()),
-    responseDeserialize: (value: Buffer): Post => Post.decode(value),
+    responseSerialize: (value: CreatePostResponse): Buffer => Buffer.from(CreatePostResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer): CreatePostResponse => CreatePostResponse.decode(value),
   },
   getPost: {
     path: "/blog.PostService/GetPost",
@@ -956,7 +1018,7 @@ export const PostServiceService = {
 } as const;
 
 export interface PostServiceServer extends UntypedServiceImplementation {
-  createPost: handleUnaryCall<CreatePostRequest, Post>;
+  createPost: handleUnaryCall<CreatePostRequest, CreatePostResponse>;
   getPost: handleUnaryCall<GetPostRequest, Post>;
   updatePost: handleUnaryCall<UpdatePostRequest, Post>;
   deletePost: handleUnaryCall<DeletePostRequest, Empty>;
@@ -966,18 +1028,18 @@ export interface PostServiceServer extends UntypedServiceImplementation {
 export interface PostServiceClient extends Client {
   createPost(
     request: CreatePostRequest,
-    callback: (error: ServiceError | null, response: Post) => void,
+    callback: (error: ServiceError | null, response: CreatePostResponse) => void,
   ): ClientUnaryCall;
   createPost(
     request: CreatePostRequest,
     metadata: Metadata,
-    callback: (error: ServiceError | null, response: Post) => void,
+    callback: (error: ServiceError | null, response: CreatePostResponse) => void,
   ): ClientUnaryCall;
   createPost(
     request: CreatePostRequest,
     metadata: Metadata,
     options: Partial<CallOptions>,
-    callback: (error: ServiceError | null, response: Post) => void,
+    callback: (error: ServiceError | null, response: CreatePostResponse) => void,
   ): ClientUnaryCall;
   getPost(request: GetPostRequest, callback: (error: ServiceError | null, response: Post) => void): ClientUnaryCall;
   getPost(

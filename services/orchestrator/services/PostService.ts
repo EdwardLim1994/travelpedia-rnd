@@ -1,6 +1,7 @@
 import {
   PostServiceClient,
   CreatePostRequest,
+  CreatePostResponse,
   DeletePostRequest,
 } from "@travelpedia/post-service/generated/proto";
 import { KafkaClient } from "@travelpedia/common/client";
@@ -11,7 +12,9 @@ export class PostService {
     private kafkaClient: KafkaClient,
   ) {}
 
-  public async createPost(request: CreatePostRequest): Promise<any> {
+  public async createPost(
+    request: CreatePostRequest,
+  ): Promise<CreatePostResponse> {
     try {
       const createPostCalling = async () =>
         new Promise((resolve, reject) => {
@@ -25,9 +28,12 @@ export class PostService {
             }
           });
         });
-      const res = await createPostCalling();
+      const res: CreatePostResponse =
+        (await createPostCalling()) as CreatePostResponse;
       return res;
-    } catch (error) {}
+    } catch (error) {
+      throw new Error("Failed to create post", { cause: error as Error });
+    }
   }
 
   public async deletePost(

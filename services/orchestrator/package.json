@@ -13,9 +13,10 @@
     "ts-proto": "^2.11.2"
   },
   "dependencies": {
+    "@bufbuild/protobuf": "^2.11.0",
     "@grpc/grpc-js": "^1.14.3",
-    "@travelpedia/post-service": "workspace:*",
     "@travelpedia/common": "workspace:*",
+    "@travelpedia/post-service": "workspace:*",
     "kafkajs": "^2.2.4"
   }
 }

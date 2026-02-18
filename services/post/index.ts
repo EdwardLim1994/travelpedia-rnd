@@ -3,6 +3,7 @@ import {
   PostServiceService,
   PostServiceClient,
   type PostServiceServer,
+  DeletePostRequest,
 } from "./generated/proto/post";
 
 import { ApolloServer } from "@apollo/server";
@@ -11,7 +12,9 @@ import { buildSubgraphSchema } from "@apollo/subgraph";
 import { gql } from "graphql-tag";
 import type { Resolvers, Post } from "./generated/graphql/post.ts";
 import { CommentServiceClient } from "@travelpedia/comment-service/generated/proto/comment";
-import type { Comment } from "@travelpedia/comment-service/generated/graphql/comment";
+import { KafkaClient } from "@travelpedia/common/client";
+import { KafkaGroupId } from "../../packages/common/constant/KafkaGroupId.ts";
+import { KafkaTopicName } from "../../packages/common/constant/KafkaTopicName.ts";
 
 const graphqlSchema = await Bun.file("./graphql/post.graphql").text();
 
@@ -20,7 +23,9 @@ async function startGrpcServer() {
 
   const postServer: PostServiceServer = {
     createPost: (call, callback) => {},
-    deletePost: (call, callback) => {},
+    deletePost: (call, callback) => {
+      callback(null, { success: true });
+    },
     getPost: (call, callback) => {
       callback(null, {
         id: "789",
@@ -134,10 +139,51 @@ async function startGraphQLServer() {
   console.log(`GraphQL server running at ${url}`);
 }
 
+async function startKafkaConsumer() {
+  const kafkaClient = KafkaClient.create("post-service");
+
+  await kafkaClient.consume(
+    KafkaGroupId.DeletePost,
+    KafkaTopicName.DeletePost,
+    async (message: Uint8Array) => {
+      const deletePostRequest = DeletePostRequest.decode(message);
+      console.log(
+        `Received delete post message for post ID: ${deletePostRequest.id}`,
+      );
+      // Here you would add logic to delete the post from your database
+      const grpcClient = new PostServiceClient(
+        "localhost:50080",
+        grpc.credentials.createInsecure(),
+      );
+
+      const calling = async () =>
+        new Promise((resolve, reject) => {
+          grpcClient.deletePost(
+            { id: deletePostRequest.id },
+            (error, response) => {
+              if (error) {
+                console.error("Error deleting post:", error);
+                reject(error);
+                return;
+              } else {
+                console.log("Post deleted successfully");
+                resolve(response);
+              }
+            },
+          );
+        });
+
+      const result = await calling();
+      console.log("Delete post result:", result);
+    },
+  );
+}
+
 (async () => {
   try {
     await startGrpcServer();
     await startGraphQLServer();
+    await startKafkaConsumer();
   } catch (error) {
     console.error("Error starting servers:", error);
   }

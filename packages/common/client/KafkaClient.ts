@@ -1,4 +1,5 @@
-import { Kafka, type Producer } from "kafkajs";
+import { Kafka, logLevel, type Producer } from "kafkajs";
+import type { KafkaGroupId, KafkaTopicName } from "../constant";
 
 export class KafkaClient {
   private kafka: Kafka;
@@ -6,7 +7,7 @@ export class KafkaClient {
   private constructor(private clientId: string) {
     this.kafka = new Kafka({
       clientId: this.clientId,
-      brokers: ["localhost:9092"],
+      brokers: ["localhost:29092"],
     });
   }
 
@@ -15,8 +16,8 @@ export class KafkaClient {
   }
 
   public async produce(payload: Uint8Array, topic: string): Promise<void> {
+    const producer: Producer = this.kafka.producer();
     try {
-      const producer: Producer = this.kafka.producer();
       await producer.connect();
       await producer.send({
         topic,
@@ -28,6 +29,41 @@ export class KafkaClient {
       });
     } catch (error) {
       console.error("Error in Kafka producer:", error);
+      await producer.disconnect();
+    }
+  }
+
+  public async consume(
+    groupId: KafkaGroupId,
+    topic: KafkaTopicName,
+    onMessage: (message: Uint8Array) => Promise<void>,
+  ): Promise<void> {
+    const consumer = this.kafka.consumer({
+      groupId: groupId,
+    });
+    try {
+      await consumer.connect();
+
+      await consumer.subscribe({ topic, fromBeginning: true });
+
+      await consumer.run({
+        eachMessage: async ({ topic, partition, message }) => {
+          console.log(
+            `Received message: ${message.value?.toString()} on topic ${topic} partition ${partition}`,
+          );
+
+          if (!message.value) {
+            console.warn("Received message with empty value, skipping...");
+            return;
+          }
+
+          await onMessage(message.value);
+        },
+      });
+    } catch (error) {
+      console.error("Error in Kafka consumer:", error);
+
+      await consumer.disconnect();
     }
   }
 }

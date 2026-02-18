@@ -6,11 +6,15 @@
       "name": "travelpedia_rnd",
       "dependencies": {
         "@apollo/rover": "^0.37.0",
+        "kafkajs": "^2.2.4",
         "turbo": "^2.8.8",
       },
     },
     "packages/common": {
       "name": "@travelpedia/common",
+      "dependencies": {
+        "kafkajs": "^2.2.4",
+      },
       "devDependencies": {
         "@types/bun": "latest",
       },
@@ -23,6 +27,7 @@
       "dependencies": {
         "@apollo/server": "^5.3.0",
         "@apollo/subgraph": "^2.13.0",
+        "@bufbuild/protobuf": "^2.11.0",
         "@grpc/grpc-js": "^1.14.3",
         "graphql": "^16.12.0",
         "graphql-tag": "^2.12.6",
@@ -43,6 +48,7 @@
     "services/orchestrator": {
       "name": "@travelpedia/orchestrator",
       "dependencies": {
+        "@bufbuild/protobuf": "^2.11.0",
         "@grpc/grpc-js": "^1.14.3",
         "@travelpedia/common": "workspace:*",
         "@travelpedia/post-service": "workspace:*",
@@ -59,8 +65,10 @@
       "dependencies": {
         "@apollo/server": "^5.3.0",
         "@apollo/subgraph": "^2.13.0",
+        "@bufbuild/protobuf": "^2.11.0",
         "@grpc/grpc-js": "^1.14.3",
         "@travelpedia/comment-service": "*",
+        "@travelpedia/common": "workspace:*",
         "graphql": "^16.12.0",
         "graphql-tag": "^2.12.6",
       },

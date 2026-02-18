@@ -1,15 +1,18 @@
 {
   "name": "@travelpedia/common",
-  "type": "module",
-  "private": true,
-  "exports": {
-    "./util": "./util/index.ts",
-    "./client": "./client/index.ts"
-  },
   "devDependencies": {
     "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "exports": {
+    "./util": "./util/index.ts",
+    "./client": "./client/index.ts"
+  },
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "kafkajs": "^2.2.4"
   }
 }
